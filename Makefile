@@ -33,7 +33,7 @@ CFLAGS += -O2 -std=gnu99
 
 .PHONY: all clean
 
-all: priv priv/twiddler_nif.so priv/twiddler_port
+all: priv priv/twiddler_nif.so priv/twiddler_c
 
 %.o: %.c
 	$(CC) -c $(ERL_CFLAGS) $(CFLAGS) -o $@ $<
@@ -44,7 +44,7 @@ priv:
 priv/twiddler_nif.so: src/twiddler_nif.o src/twiddler_common.o
 	$(CC) $^ $(ERL_LDFLAGS) $(LDFLAGS) $(SO_LDFLAGS) -o $@
 
-priv/twiddler_port: src/twiddler_port.o src/twiddler_common.o
+priv/twiddler_c: src/twiddler_c.o src/twiddler_common.o
 	$(CC) $^ $(ERL_LDFLAGS) $(LDFLAGS) -o $@
 
 clean:

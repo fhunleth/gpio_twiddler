@@ -12,7 +12,7 @@ TEMPLATE = app
 SOURCES += \
     src/twiddler_common.c \
     src/twiddler_nif.c \
-    src/twiddler_port.c
+    src/twiddler_c.c
 
 HEADERS += \
     src/twiddler_common.h

@@ -10,7 +10,13 @@ defmodule GpioTwiddler.Nif do
     end
   end
 
-  def gpio_high(),             do: exit(:nif_library_not_loaded)
-  def gpio_low(),              do: exit(:nif_library_not_loaded)
+  def gpio_high(), do: exit(:nif_library_not_loaded)
+  def gpio_low(), do: exit(:nif_library_not_loaded)
 
+  def twiddle(0), do: :ok
+  def twiddle(count) do
+    gpio_high()
+    gpio_low()
+    twiddle(count - 1)
+  end
 end
