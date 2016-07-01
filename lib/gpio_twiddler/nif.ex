@@ -19,4 +19,12 @@ defmodule GpioTwiddler.Nif do
     gpio_low()
     twiddle(count - 1)
   end
+
+  def twiddle_enum(count) do
+    Enum.each(1..count,
+      fn(_) -> gpio_high()
+               gpio_low()
+      end)
+  end
+
 end
