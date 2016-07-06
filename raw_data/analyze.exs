@@ -18,7 +18,7 @@ defmodule Parser do
 
   def load_csv(filename) do
     File.stream!(filename)
-    |> Stream.drop(2) # Drop the header row and first data point since it's not right
+    |> Stream.drop(16) # Drop the header row and initial data points to allow for some warmup
     |> Enum.map(&csv_to_tuple/1)
   end
 end
@@ -97,13 +97,13 @@ offtime_median = Analyzer.median(offtimes)
 
 # Split out the hiccups
 {ontime_normal, ontime_hiccups} =
-  Analyzer.split_out_hiccups(ontimes, 2 * ontime_median)
+  Analyzer.split_out_hiccups(ontimes, 10 * ontime_median)
 
 {offtime_normal, offtime_hiccups} =
-  Analyzer.split_out_hiccups(offtimes, 2 * offtime_median)
+  Analyzer.split_out_hiccups(offtimes, 10 * offtime_median)
 
 all_hiccups = ontime_hiccups ++ offtime_hiccups
-longest_hiccup = Analyzer.max(all_hiccups)
+longest_hiccup = Analyzer.max(ontimes ++ offtimes)
 
 ontime_mean = Analyzer.mean(ontime_normal)
 ontime_stdev = Analyzer.stdev(ontime_normal)
@@ -123,4 +123,3 @@ IO.puts "The stdev off time is #{offtime_stdev}"
 IO.puts "The median on time is #{ontime_median}"
 IO.puts "The median off time is #{offtime_median}"
 end
-
