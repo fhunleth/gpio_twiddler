@@ -78,11 +78,11 @@ if Enum.empty?(System.argv()) do
   System.halt
 end
 
-p = System.argv()
-  |> Enum.at(0)
+filename = System.argv() |> Enum.at(0)
+
+p = filename
   |> Parser.load_csv
   |> Analyzer.times_to_deltas
-IO.inspect p
 
 %{1 => ontime_tuples, 0 => offtime_tuples} =
   Enum.group_by(p, fn({_, value}) -> value end)
@@ -110,6 +110,9 @@ ontime_stdev = Analyzer.stdev(ontime_normal)
 offtime_mean = Analyzer.mean(offtime_normal)
 offtime_stdev = Analyzer.stdev(offtime_normal)
 
+IO.puts "#{filename},#{Enum.count(all_hiccups)},#{longest_hiccup},#{ontime_mean},#{ontime_stdev},#{ontime_median},#{offtime_mean},#{offtime_stdev},#{offtime_median}"
+
+if false do
 IO.puts "# hiccups: #{Enum.count(all_hiccups)}"
 IO.puts "Longest hiccup: #{longest_hiccup}"
 IO.puts "Overall mean is #{mean}"
@@ -119,4 +122,5 @@ IO.puts "The mean off time is #{offtime_mean}"
 IO.puts "The stdev off time is #{offtime_stdev}"
 IO.puts "The median on time is #{ontime_median}"
 IO.puts "The median off time is #{offtime_median}"
+end
 
