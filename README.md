@@ -52,6 +52,10 @@ Data for each experiment is named with the following convention:
 The filename `arduino-uno-r3` is for captures using an Arduino Uno R3 running
 the code in `arduino/twiddle_fast`.
 
+## Results
+
+![Results](assets/results.png)
+
 ## Replicating the results
 
 Assuming that you have a BeagleBone Black, run through the [Nerves installation guide](https://hexdocs.pm/nerves/installation.html) to set up your system.
