@@ -10,9 +10,47 @@ While they all toggle a GPIO, some are platform dependent, require the Erlang
 VM to run as root, run the risk of crashing the VM, can't support other GPIO
 features (like notification when an input changes), or require C coding.
 TL;DR: The more of these issues or limitations you can put up with, the faster
-things go. Even slow microcontrollers can be better than 1 GHz processors
-at these low level tasks if hard real-time operation or high performance are
-required.
+things go. Old 16 MHz 8-bit microcontrollers are better suited to some tasks.
+
+## Naming
+
+Data for each experiment is named with the following convention:
+
+`kernel_erlang_work_test.csv`
+
+`kernel` is one of the following:
+  * `rt` - Linux kernel compiled with CONFIG_PREEMPT_RT_FULL, HZ=250
+  * `ll` - Linux kernel compiled with CONFIG_PREEMPT_LL (low-latency desktop),
+    HZ=250
+
+`erlang` is one of the following:
+  * `smp` - Erlang compiled with SMP enabled
+  * `nosmp` - Erlang compiled with SMP disabled
+
+`work` is one of the following:
+  * `idle` - Nothing else is going on. The twiddler has 100% of the CPU.
+  * `timer` - A `GenServer` gets a timer event sent to it every 1 ms.
+  * `stress` - The C `stress` program is started and instructed to max out the
+    CPU.
+  * `estress` - An Elixir process is started that computes square roots
+    constantly (similar to `stress`, but in Elixir)
+  * `estress2` - Same as `estress`, but the twiddler runs at the Erlang `high`
+    priority level. `GpioTwiddler.Stress` runs at the `normal` priority level.
+
+`test` is one of the following:
+  * `ale` - `GpioTwiddler.Ale.twiddle`
+  * `elixirwrite` - Use sysfs via `IO.write/2` in normal mode.`GpioTwiddler.Elixir.twiddle(20000, [], :write)`
+  * `elixirbinwrite` - Use sysfs via `IO.binwrite/2` in normal mode.`GpioTwiddler.Elixir.twiddle(20000, [], :binwrite)`
+  * `elixirrawbinwrite` - Use sysfs via `IO.binwrite/2` in raw mode.`GpioTwiddler.Elixir.twiddle(20000, [:raw], :binwrite)`
+  * `erlangwrite` - Use sysfs via `:file.write/2` in normal mode.`GpioTwiddler.Erlang.twiddle(20000)`
+  * `erlangrawwrite` - Use sysfs via `:file.write/2` in raw mode.`GpioTwiddler.Erlang.twiddle_raw(20000)`
+  * `sysfs` - Use sysfs in C. `GpioTwiddler.C.sysfs(20000)`
+  * `mmap` - Use mmap in C. `GpioTwiddler.C.mmap(20000)`
+  * `nif` - Use mmap via a NIF. `GpioTwidder.Nif.twiddle(20000)`
+  * `nifenum` - Use mmap via a NIF, but in Elixir iterate using `Enum.each`. `GpioTwiddler.Nif.twiddle_enum(20000)`
+
+The filename `arduino-uno-r3` is for captures using an Arduino Uno R3 running
+the code in `arduino/twiddle_fast`.
 
 ## Replicating the results
 
