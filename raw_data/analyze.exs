@@ -95,7 +95,7 @@ mean = Analyzer.mean(alltimes)
 ontime_median = Analyzer.median(ontimes)
 offtime_median = Analyzer.median(offtimes)
 
-# Split out the hiccups
+# Split out the outliers
 {ontime_normal, ontime_hiccups} =
   Analyzer.split_out_hiccups(ontimes, 10 * ontime_median)
 
@@ -103,18 +103,20 @@ offtime_median = Analyzer.median(offtimes)
   Analyzer.split_out_hiccups(offtimes, 10 * offtime_median)
 
 all_hiccups = ontime_hiccups ++ offtime_hiccups
-longest_hiccup = Analyzer.max(ontimes ++ offtimes)
+longest = Analyzer.max(ontimes ++ offtimes)
 
+# Don't run the outliers through the mean and stdev since
+# they're often orders of magnitude away from the 99% case
 ontime_mean = Analyzer.mean(ontime_normal)
 ontime_stdev = Analyzer.stdev(ontime_normal)
 offtime_mean = Analyzer.mean(offtime_normal)
 offtime_stdev = Analyzer.stdev(offtime_normal)
 
-IO.puts "#{filename},#{Enum.count(all_hiccups)},#{longest_hiccup},#{ontime_mean},#{ontime_stdev},#{ontime_median},#{offtime_mean},#{offtime_stdev},#{offtime_median}"
+IO.puts "#{filename},#{Enum.count(all_hiccups)},#{longest},#{ontime_mean},#{ontime_stdev},#{ontime_median},#{offtime_mean},#{offtime_stdev},#{offtime_median}"
 
 if false do
 IO.puts "# hiccups: #{Enum.count(all_hiccups)}"
-IO.puts "Longest hiccup: #{longest_hiccup}"
+IO.puts "Longest hiccup: #{longest}"
 IO.puts "Overall mean is #{mean}"
 IO.puts "The mean on time is #{ontime_mean}"
 IO.puts "The stdev on time is #{ontime_stdev}"
